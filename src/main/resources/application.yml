@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: fis-api
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:h2:mem:fis;MODE=mysql;
+    username: sa
+    password: sa
+    driver-class-name: org.h2.Driver
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 50
+      transaction-isolation: TRANSACTION_READ_UNCOMMITTED
+      pool-name: pool-fis-api
+  h2:
+    console:
+      enabled: true
+      path: /fis
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        hbm2ddl.auto: update
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    open-in-view: false
+    show-sql: true
+    defer-datasource-initialization: true
+springdoc:
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui/index.html
+    disable-swagger-default-url: true
+    display-query-params-without-oauth2: true
+  paths-to-match:
+    - /**
+kakaopaysec-api:
+  version: '1.0.0'
+  url: 'http://localhost:8080'
