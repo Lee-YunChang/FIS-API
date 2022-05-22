@@ -1,5 +1,6 @@
 package com.fis.domain.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,4 +31,12 @@ public class ContractInformation {
     private Integer rate;
 
     private Date createDtime;
+
+    @Builder
+    public ContractInformation(YoutubeChannel youtubeChannel, Creator creator, Integer rate, Date createDtime){
+        this.youtubeChannel = youtubeChannel;
+        this.creator = creator;
+        this.rate = rate;
+        this.createDtime = createDtime;
+    }
 }

@@ -1,5 +1,6 @@
 package com.fis.domain.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,14 @@ public class YoutubeChannelProfit {
     @ManyToOne(fetch = FetchType.LAZY)
     private YoutubeChannel youtubeChannel;
 
-    private String channelName;
+    private Integer profitAmt;
 
-    private Date createDtime;
+    private Date profitDtime;
+
+    @Builder
+    public YoutubeChannelProfit(YoutubeChannel youtubeChannel, Integer profitAmt, Date profitDtime){
+        this.youtubeChannel = youtubeChannel;
+        this.profitAmt = profitAmt;
+        this.profitDtime = profitDtime;
+    }
 }
