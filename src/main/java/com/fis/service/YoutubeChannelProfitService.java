@@ -24,18 +24,34 @@ public class YoutubeChannelProfitService {
     private final YoutubeChannelProfitRepository youtubeChannelProfitRepository;
     private final SettlementDetailRepository settlementDetailRepository;
     private final CreatorRepository creatorRepository;
+    private final ContractInformationRepository contractInformationRepository;
 
     @Transactional
     public int save(ChannelProfitRequest value) {
 
         YoutubeChannel youtubeChannel = youtubeChannelRepository.findById(value.getChannelId()).orElseThrow(InvalidChannelException::new);
+        List<ContractInformation> contractInformations = contractInformationRepository.findByYoutubeChannel(youtubeChannel);
 
         YoutubeChannelProfit.YoutubeChannelProfitBuilder builder = YoutubeChannelProfit.builder();
         builder.youtubeChannel(youtubeChannel)
                 .profitAmt(value.getProfitAmt())
+                .companyRsAmt(value.getProfitAmt() * (youtubeChannel.getCompanyRs()/100))
+                .creatorRsAmt(value.getProfitAmt() * ((100 - youtubeChannel.getCompanyRs())/100))
                 .profitDtime(Date.valueOf(value.getProfitDtime()));
 
-        return youtubeChannelProfitRepository.save(builder.build()) != null ? 1 : 0;
+        YoutubeChannelProfit youtubeChannelProfit = youtubeChannelProfitRepository.save(builder.build());
+
+        for(ContractInformation contractInformation : contractInformations){
+
+            SettlementDetail.SettlementDetailBuilder settlementDetailBuilder = SettlementDetail.builder();
+            settlementDetailBuilder.youtubeChannelProfit(youtubeChannelProfit)
+                    .contractInformation(contractInformation)
+                    .settlementAmt((contractInformation.getRate()/100)*youtubeChannelProfit.getCreatorRsAmt())
+                    .createDtime(Date.valueOf(value.getProfitDtime()));
+
+            settlementDetailRepository.save(settlementDetailBuilder.build());
+        }
+        return youtubeChannelProfit != null ? 1 : 0;
     }
 
     @Transactional
@@ -44,7 +60,7 @@ public class YoutubeChannelProfitService {
         ChannelProfitResponse response = new ChannelProfitResponse();
 
         YoutubeChannel youtubeChannel = youtubeChannelRepository.findById(id).orElseThrow(InvalidChannelException::new);
-        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByYouTubeChannelAndprofitDtimeStartsWith(youtubeChannel,searchMonth);
+        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByYoutubeChannelAndProfitDtimeStartsWith(youtubeChannel,java.sql.Date.valueOf(searchMonth));
         List<SettlementDetail> settlementDetails = settlementDetailRepository.findByYoutubeChannelProfitIn(youtubeChannelProfits);
 
         List<ChannelProfitResponse.Creator> creators = settlementDetails.stream()

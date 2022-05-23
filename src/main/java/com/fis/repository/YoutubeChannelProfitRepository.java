@@ -4,10 +4,11 @@ import com.fis.domain.entity.YoutubeChannel;
 import com.fis.domain.entity.YoutubeChannelProfit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.sql.Date;
 import java.util.List;
 
 public interface YoutubeChannelProfitRepository extends JpaRepository<YoutubeChannelProfit, Long> {
-    List<YoutubeChannelProfit> findByprofitDtimeStartsWith(String searchMonth);
+    List<YoutubeChannelProfit> findByProfitDtimeStartsWith(Date searchMonth);
 
-    List<YoutubeChannelProfit> findByYouTubeChannelAndprofitDtimeStartsWith(YoutubeChannel youtubeChannel, String searchMonth);
+    List<YoutubeChannelProfit> findByYoutubeChannelAndProfitDtimeStartsWith(YoutubeChannel youtubeChannel, Date searchMonth);
 }

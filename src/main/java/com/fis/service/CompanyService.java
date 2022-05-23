@@ -23,7 +23,7 @@ public class CompanyService {
 
         CompanySalesResponse response = new CompanySalesResponse();
 
-        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByprofitDtimeStartsWith(searchMonth);
+        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByProfitDtimeStartsWith(java.sql.Date.valueOf(searchMonth));
 
         int totoalSalesAmt = youtubeChannelProfits.stream().mapToInt(f -> f.getProfitAmt()).sum();
         int netSalesAmt = youtubeChannelProfits.stream().mapToInt(f -> f.getCompanyRsAmt()).sum();

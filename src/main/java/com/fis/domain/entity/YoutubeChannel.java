@@ -25,6 +25,8 @@ public class YoutubeChannel {
 
     private String channelName;
 
+    private Integer CompanyRs;
+
     private Date createDtime;
 
 }
