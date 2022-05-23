@@ -1,6 +1,7 @@
 package com.fis.controller;
 
 import com.fis.domain.request.ChannelProfitRequest;
+import com.fis.domain.response.ChannelProfitResponse;
 import com.fis.domain.response.CreatorSettlementResponse;
 import com.fis.service.YoutubeChannelProfitService;
 import com.fis.service.YoutubeChannelService;
@@ -36,4 +37,10 @@ public class YoutubeChannelController {
         return ResponseEntity.badRequest().build();
     }
 
+
+    @Operation(summary = "채널 수익금 및 크리에이터 정산금액 조회")
+    @GetMapping(value = "/profit/{id}")
+    public ResponseEntity<ChannelProfitResponse> channelProfit(@PathVariable("id") long id, @RequestParam(value = "searchMonth") @DateTimeFormat(pattern = "yyyy-MM")String  searchMonth) {
+        return ResponseEntity.ok().body(youtubeChannelProfitService.channelProfit(id,searchMonth));
+    }
 }

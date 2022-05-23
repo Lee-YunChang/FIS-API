@@ -1,16 +1,20 @@
 package com.fis.service;
 
-import com.fis.domain.entity.YoutubeChannel;
-import com.fis.domain.entity.YoutubeChannelProfit;
+import com.fis.domain.entity.*;
 import com.fis.domain.request.ChannelProfitRequest;
+import com.fis.domain.response.ChannelProfitResponse;
+import com.fis.domain.response.CreatorSettlementResponse;
 import com.fis.exception.InvalidChannelException;
-import com.fis.repository.YoutubeChannelProfitRepository;
-import com.fis.repository.YoutubeChannelRepository;
+import com.fis.exception.InvalidDataException;
+import com.fis.exception.InvalidUserException;
+import com.fis.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +22,8 @@ public class YoutubeChannelProfitService {
 
     private final YoutubeChannelRepository youtubeChannelRepository;
     private final YoutubeChannelProfitRepository youtubeChannelProfitRepository;
+    private final SettlementDetailRepository settlementDetailRepository;
+    private final CreatorRepository creatorRepository;
 
     @Transactional
     public int save(ChannelProfitRequest value) {
@@ -30,5 +36,35 @@ public class YoutubeChannelProfitService {
                 .profitDtime(Date.valueOf(value.getProfitDtime()));
 
         return youtubeChannelProfitRepository.save(builder.build()) != null ? 1 : 0;
+    }
+
+    @Transactional
+    public ChannelProfitResponse channelProfit(long id, String searchMonth) {
+
+        ChannelProfitResponse response = new ChannelProfitResponse();
+
+        YoutubeChannel youtubeChannel = youtubeChannelRepository.findById(id).orElseThrow(InvalidChannelException::new);
+        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByYouTubeChannelAndprofitDtimeStartsWith(youtubeChannel,searchMonth);
+        List<SettlementDetail> settlementDetails = settlementDetailRepository.findByYoutubeChannelProfitIn(youtubeChannelProfits);
+
+        List<ChannelProfitResponse.Creator> creators = settlementDetails.stream()
+                .collect(Collectors.groupingBy((map) ->map.getContractInformation().getCreator().getId()))
+                .entrySet()
+                .stream()
+                .sorted((a, b) -> b.getKey().compareTo(a.getKey()))
+                .map(entry -> {
+                    Creator creator = creatorRepository.findById(entry.getKey()).orElseThrow(InvalidUserException::new);
+                    int settlementAmt = entry.getValue().stream().mapToInt(s ->s.getSettlementAmt()).sum();
+                    return new ChannelProfitResponse.Creator(creator.getName(),settlementAmt);
+                }).collect(Collectors.toList());
+
+        int profitAmt = youtubeChannelProfits.stream().mapToInt(s -> s.getProfitAmt()).sum(); // 해당 채널 전체 수익금
+        int creatorRsAmt = youtubeChannelProfits.stream().mapToInt(s -> s.getCreatorRsAmt()).sum(); //크리에이터 수익금 배분
+
+        response.setProfitAmt(profitAmt);
+        response.setCreatorRsAmt(creatorRsAmt);
+        response.setCreator(creators);
+
+        return response;
     }
 }

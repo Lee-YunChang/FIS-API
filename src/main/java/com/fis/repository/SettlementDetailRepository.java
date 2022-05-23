@@ -2,6 +2,7 @@ package com.fis.repository;
 
 import com.fis.domain.entity.ContractInformation;
 import com.fis.domain.entity.SettlementDetail;
+import com.fis.domain.entity.YoutubeChannelProfit;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface SettlementDetailRepository extends JpaRepository<SettlementDeta
     //List<SettlementDetail> findByCreateDtimeStartsWith(String searchMonth);
 
     List<SettlementDetail> findByContractInformationInAndCreateDtimeStartsWith(List<ContractInformation> contractInformations, String searchMonth);
+
+    List<SettlementDetail> findByYoutubeChannelProfitIn(List<YoutubeChannelProfit> youtubeChannelProfits);
 }
