@@ -19,8 +19,8 @@ import java.util.List;
 public class OpenApiConfig {
 
 	@Bean
-	public OpenAPI openAPI(@Value("${kakaopaysec-api.version}") String appVersion,
-			@Value("${kakaopaysec-api.url}") String url, @Value("${spring.profiles.active}") String active) {
+	public OpenAPI openAPI(@Value("${fis-api.version}") String appVersion,
+			@Value("${fis-api.url}") String url, @Value("${spring.profiles.active}") String active) {
 		Info info = new Info().title("fis API - " + active).version(appVersion)
 				.description("fis API 입니다.")
 				.termsOfService("http://swagger.io/terms/")

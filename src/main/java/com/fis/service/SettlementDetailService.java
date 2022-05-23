@@ -24,11 +24,13 @@ public class SettlementDetailService {
 
     private final SettlementDetailRepository settlementDetailRepository;
     private final ContractInformationRepository contractInformationRepository;
-
+    private final CreatorRepository creatorRepository;
     @Transactional
-    public List<CreatorSettlementResponse> creatorSettlements(String month) {
+    public List<CreatorSettlementResponse> creatorSettlements(long id, String searchMonth) {
 
-        List<SettlementDetail> settlementDetails = settlementDetailRepository.findAll();
+        Creator creator = creatorRepository.findById(id).orElseThrow(InvalidUserException::new);
+        List<ContractInformation> contractInformations = contractInformationRepository.findByCreator(creator);
+        List<SettlementDetail> settlementDetails = settlementDetailRepository.findByContractInformationInAndCreateDtimeStartsWith(contractInformations,searchMonth);
 
         List<CreatorSettlementResponse> responses = settlementDetails.stream()
                 .collect(Collectors.groupingBy((map) ->map.getContractInformation().getId()))
@@ -37,7 +39,7 @@ public class SettlementDetailService {
                 .sorted((a, b) -> b.getKey().compareTo(a.getKey()))
                 .map(entry -> {
                     ContractInformation contractInformation = contractInformationRepository.findById(entry.getKey()).orElseThrow(InvalidDataException::new);
-                    int settlementAmt = entry.getValue().stream().mapToInt(s ->s.getSettlementAmount()).sum();
+                    int settlementAmt = entry.getValue().stream().mapToInt(s ->s.getSettlementAmt()).sum();
                     return new CreatorSettlementResponse(contractInformation.getYoutubeChannel().getChannelName(),settlementAmt);
                 }).collect(Collectors.toList());
 

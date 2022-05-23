@@ -28,15 +28,15 @@ public class SettlementDetail {
     @ManyToOne(fetch = FetchType.LAZY)
     private ContractInformation contractInformation;
 
-    private Integer settlementAmount;
+    private Integer settlementAmt;
 
     private Date createDtime;
 
     @Builder
-    public SettlementDetail(YoutubeChannelProfit youtubeChannelProfit, ContractInformation contractInformation, Integer settlementAmount, Date createDtime){
+    public SettlementDetail(YoutubeChannelProfit youtubeChannelProfit, ContractInformation contractInformation, Integer settlementAmt, Date createDtime){
         this.youtubeChannelProfit = youtubeChannelProfit;
         this.contractInformation = contractInformation;
-        this.settlementAmount = settlementAmount;
+        this.settlementAmt = settlementAmt;
         this.createDtime = createDtime;
     }
 }

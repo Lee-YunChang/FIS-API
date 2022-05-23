@@ -43,6 +43,6 @@ springdoc:
     display-query-params-without-oauth2: true
   paths-to-match:
     - /**
-kakaopaysec-api:
+fis-api:
   version: '1.0.0'
   url: 'http://localhost:8080'

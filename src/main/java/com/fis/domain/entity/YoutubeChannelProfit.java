@@ -25,12 +25,18 @@ public class YoutubeChannelProfit {
 
     private Integer profitAmt;
 
+    private Integer companyRsAmt;
+
+    private Integer creatorRsAmt;
+
     private Date profitDtime;
 
     @Builder
-    public YoutubeChannelProfit(YoutubeChannel youtubeChannel, Integer profitAmt, Date profitDtime){
+    public YoutubeChannelProfit(YoutubeChannel youtubeChannel, Integer profitAmt,Integer companyRsAmt, Integer creatorRsAmt, Date profitDtime){
         this.youtubeChannel = youtubeChannel;
         this.profitAmt = profitAmt;
+        this.companyRsAmt = companyRsAmt;
+        this.creatorRsAmt = creatorRsAmt;
         this.profitDtime = profitDtime;
     }
 }
