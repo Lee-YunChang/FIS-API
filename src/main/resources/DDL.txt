@@ -1,0 +1,56 @@
+CREATE TABLE `creator` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `create_dtime` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `youtube_channel` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `channel_name` varchar(255) DEFAULT NULL,
+  `company_rs` int(11) DEFAULT NULL,
+  `create_dtime` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `youtue_channel_profit` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `company_rs_amt` int(11) DEFAULT NULL,
+  `creator_rs_amt` int(11) DEFAULT NULL,
+  `profit_amt` int(11) DEFAULT NULL,
+  `profit_dtime` date DEFAULT NULL,
+  `youtube_channel_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `youtue_channel_profit_FK` (`youtube_channel_id`),
+  CONSTRAINT `youtue_channel_profit_FK` FOREIGN KEY (`youtube_channel_id`) REFERENCES `youtube_channel` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `contract_information` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `rate` int(11) DEFAULT NULL,
+  `create_dtime` date DEFAULT NULL,
+  `youtube_channel_id` bigint(20) DEFAULT NULL,
+  `creator_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contract_information_FK` (`creator_id`),
+  KEY `contract_information_FK_1` (`youtube_channel_id`),
+  CONSTRAINT `contract_information_FK` FOREIGN KEY (`creator_id`) REFERENCES `creator` (`id`),
+  CONSTRAINT `contract_information_FK_1` FOREIGN KEY (`youtube_channel_id`) REFERENCES `youtube_channel` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `settlement_detail` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `settlement_amt` int(11) DEFAULT NULL,
+  `create_dtime` date DEFAULT NULL,
+  `contract_information_id` bigint(20) DEFAULT NULL,
+  `youtube_channel_profit_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `settlement_detail_FK` (`youtube_channel_profit_id`),
+  KEY `settlement_detail_FK_1` (`contract_information_id`),
+  CONSTRAINT `settlement_detail_FK` FOREIGN KEY (`youtube_channel_profit_id`) REFERENCES `youtue_channel_profit` (`id`),
+  CONSTRAINT `settlement_detail_FK_1` FOREIGN KEY (`contract_information_id`) REFERENCES `contract_information` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
