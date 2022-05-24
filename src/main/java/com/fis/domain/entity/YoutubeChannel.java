@@ -9,7 +9,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "youtue_channel")
+@Entity(name = "youtube_channel")
 @Getter
 @Setter
 @NoArgsConstructor
