@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/company")
 public class CompanyController {
 
-    private CompanyService companyService;
+    private final CompanyService companyService;
 
     @Operation(summary = "월별회사 매출")
     @GetMapping(value = "/sales")

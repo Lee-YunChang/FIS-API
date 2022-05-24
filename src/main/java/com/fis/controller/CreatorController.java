@@ -18,9 +18,9 @@ import java.util.List;
 @RequestMapping("/creator")
 public class CreatorController {
 
-    private SettlementDetailService settlementDetailService;
+    private final SettlementDetailService settlementDetailService;
 
-    @Operation(summary = "사용자 계좌별 예치금")
+    @Operation(summary = "크리에이터 별 정산금액")
     @GetMapping(value = "/settlement/{id}")
     public ResponseEntity<List<CreatorSettlementResponse>> creatorSettlements(@PathVariable("id") long id,@RequestParam(value = "searchMonth") @DateTimeFormat(pattern = "yyyy-MM")String  searchMonth) {
         return ResponseEntity.ok().body(settlementDetailService.creatorSettlements(id,searchMonth));

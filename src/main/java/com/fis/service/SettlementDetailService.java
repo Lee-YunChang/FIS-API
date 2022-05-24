@@ -11,10 +11,12 @@ import com.fis.repository.ContractInformationRepository;
 import com.fis.repository.CreatorRepository;
 import com.fis.repository.SettlementDetailRepository;
 import com.fis.repository.YoutubeChannelRepository;
+import com.fis.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +30,12 @@ public class SettlementDetailService {
     @Transactional
     public List<CreatorSettlementResponse> creatorSettlements(long id, String searchMonth) {
 
+        Date startDate =  Date.valueOf(searchMonth+"-01");
+        Date endDate = Date.valueOf(searchMonth+ "-"+ DateUtils.MaximumOfMonth(searchMonth));
+
         Creator creator = creatorRepository.findById(id).orElseThrow(InvalidUserException::new);
         List<ContractInformation> contractInformations = contractInformationRepository.findByCreator(creator);
-        List<SettlementDetail> settlementDetails = settlementDetailRepository.findByContractInformationInAndCreateDtimeStartsWith(contractInformations,searchMonth);
+        List<SettlementDetail> settlementDetails = settlementDetailRepository.findByContractInformationInAndCreateDtimeBetween(contractInformations,startDate,endDate);
 
         List<CreatorSettlementResponse> responses = settlementDetails.stream()
                 .collect(Collectors.groupingBy((map) ->map.getContractInformation().getId()))

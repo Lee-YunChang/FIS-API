@@ -8,7 +8,8 @@ import java.sql.Date;
 import java.util.List;
 
 public interface YoutubeChannelProfitRepository extends JpaRepository<YoutubeChannelProfit, Long> {
-    List<YoutubeChannelProfit> findByProfitDtimeStartsWith(Date searchMonth);
 
-    List<YoutubeChannelProfit> findByYoutubeChannelAndProfitDtimeStartsWith(YoutubeChannel youtubeChannel, Date searchMonth);
+    List<YoutubeChannelProfit> findByYoutubeChannelAndProfitDtimeBetween(YoutubeChannel youtubeChannel, Date startDate, Date endDate);
+
+    List<YoutubeChannelProfit> findByProfitDtimeBetween(Date startDate, Date endDate);
 }

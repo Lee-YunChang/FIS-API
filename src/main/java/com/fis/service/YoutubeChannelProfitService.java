@@ -3,11 +3,10 @@ package com.fis.service;
 import com.fis.domain.entity.*;
 import com.fis.domain.request.ChannelProfitRequest;
 import com.fis.domain.response.ChannelProfitResponse;
-import com.fis.domain.response.CreatorSettlementResponse;
 import com.fis.exception.InvalidChannelException;
-import com.fis.exception.InvalidDataException;
 import com.fis.exception.InvalidUserException;
 import com.fis.repository.*;
+import com.fis.utils.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,8 +34,8 @@ public class YoutubeChannelProfitService {
         YoutubeChannelProfit.YoutubeChannelProfitBuilder builder = YoutubeChannelProfit.builder();
         builder.youtubeChannel(youtubeChannel)
                 .profitAmt(value.getProfitAmt())
-                .companyRsAmt(value.getProfitAmt() * (youtubeChannel.getCompanyRs()/100))
-                .creatorRsAmt(value.getProfitAmt() * ((100 - youtubeChannel.getCompanyRs())/100))
+                .companyRsAmt((int) (value.getProfitAmt() * (youtubeChannel.getCompanyRs()*0.01)))
+                .creatorRsAmt((int) (value.getProfitAmt() * ((100 - youtubeChannel.getCompanyRs())*0.01)))
                 .profitDtime(Date.valueOf(value.getProfitDtime()));
 
         YoutubeChannelProfit youtubeChannelProfit = youtubeChannelProfitRepository.save(builder.build());
@@ -59,8 +58,11 @@ public class YoutubeChannelProfitService {
 
         ChannelProfitResponse response = new ChannelProfitResponse();
 
+        Date startDate =  Date.valueOf(searchMonth+"-01");
+        Date endDate = Date.valueOf(searchMonth+ "-"+DateUtils.MaximumOfMonth(searchMonth));
+
         YoutubeChannel youtubeChannel = youtubeChannelRepository.findById(id).orElseThrow(InvalidChannelException::new);
-        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByYoutubeChannelAndProfitDtimeStartsWith(youtubeChannel,java.sql.Date.valueOf(searchMonth));
+        List<YoutubeChannelProfit> youtubeChannelProfits = youtubeChannelProfitRepository.findByYoutubeChannelAndProfitDtimeBetween(youtubeChannel,startDate,endDate);
         List<SettlementDetail> settlementDetails = settlementDetailRepository.findByYoutubeChannelProfitIn(youtubeChannelProfits);
 
         List<ChannelProfitResponse.Creator> creators = settlementDetails.stream()
