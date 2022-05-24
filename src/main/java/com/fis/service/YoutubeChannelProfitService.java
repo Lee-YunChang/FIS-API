@@ -4,6 +4,7 @@ import com.fis.domain.entity.*;
 import com.fis.domain.request.ChannelProfitRequest;
 import com.fis.domain.response.ChannelProfitResponse;
 import com.fis.exception.InvalidChannelException;
+import com.fis.exception.InvalidContractInformationException;
 import com.fis.exception.InvalidUserException;
 import com.fis.repository.*;
 import com.fis.utils.DateUtils;
@@ -30,6 +31,10 @@ public class YoutubeChannelProfitService {
 
         YoutubeChannel youtubeChannel = youtubeChannelRepository.findById(value.getChannelId()).orElseThrow(InvalidChannelException::new);
         List<ContractInformation> contractInformations = contractInformationRepository.findByYoutubeChannel(youtubeChannel);
+
+        if(contractInformations.size() == 0 ){
+            throw new InvalidContractInformationException();
+        }
 
         YoutubeChannelProfit.YoutubeChannelProfitBuilder builder = YoutubeChannelProfit.builder();
         builder.youtubeChannel(youtubeChannel)

@@ -26,14 +26,6 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         return new ResponseEntity(exceptionResponsee, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(DuplicateAccountException.class)
-    public final ResponseEntity<Object> handleInvalidAccountException(Exception ex, WebRequest request){
-        ExceptionResponse exceptionResponsee =
-                new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
-
-        return new ResponseEntity(exceptionResponsee, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
     @Override //메서드를 재정의하겠다!
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
