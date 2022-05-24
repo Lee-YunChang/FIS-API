@@ -13,3 +13,5 @@
 * mysql사용 (실구현:H2)
 * hbm2ddl.auto: update 설정하여 프로젝트 실행시 자동 테이블생성, DDL을 이용하여 별도 스키마 생성 필요  X
 * defer-datasource-initialization : true , data.sql로 기초데이터 생성 (기초데이터 값 크리에이터, 유튜브채널)
+* 테이블 다이어그램
+![diagram](https://user-images.githubusercontent.com/73052947/170033104-98c8c30f-5fba-474d-9c47-653b02c3d100.PNG)
