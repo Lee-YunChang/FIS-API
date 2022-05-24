@@ -2,6 +2,8 @@ package com.fis.controller;
 
 import com.fis.domain.request.ChannelProfitRequest;
 import com.fis.domain.response.ChannelProfitResponse;
+import com.fis.domain.response.ChannelResponse;
+import com.fis.domain.response.CreatorResponse;
 import com.fis.domain.response.CreatorSettlementResponse;
 import com.fis.service.YoutubeChannelProfitService;
 import com.fis.service.YoutubeChannelService;
@@ -26,6 +28,13 @@ public class YoutubeChannelController {
     private final YoutubeChannelService youtubeChannelService;
     private final YoutubeChannelProfitService youtubeChannelProfitService;
 
+
+
+    @Operation(summary = "유튜브 채널 리스트")
+    @GetMapping(value = "")
+    public ResponseEntity<List<ChannelResponse>> channelList() {
+        return ResponseEntity.ok().body(youtubeChannelService.channelList());
+    }
 
     @Operation(summary = "채널수익금 등록")
     @PostMapping(value = "/profit", produces = "application/json")
